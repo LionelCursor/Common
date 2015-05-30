@@ -1,7 +1,9 @@
 package com.cursor.common;
 
 import android.app.Application;
-import android.util.DisplayMetrics;
+
+import com.cursor.common.utils.DisplayUtils;
+import com.orhanobut.logger.Logger;
 
 /**
  * USER: ldx
@@ -10,10 +12,18 @@ import android.util.DisplayMetrics;
  * DATE: 2015/3/15
  */
 public class CommonApplication extends Application{
+
+    //DEBUG TAG
+    private static final String TAG = "CommonApplication";
+
+    //DEBUG SWITCH
+    public static boolean DEBUG = true;
+
     @Override
     public void onCreate() {
         super.onCreate();
         AppData.init(this);
         DisplayUtils.init(this);
+        Logger.init();
     }
 }
