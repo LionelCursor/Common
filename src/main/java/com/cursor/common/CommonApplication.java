@@ -16,9 +16,6 @@ public class CommonApplication extends Application{
     //DEBUG TAG
     private static final String TAG = "CommonApplication";
 
-    //DEBUG SWITCH
-    public static boolean DEBUG = true;
-
     @Override
     public void onCreate() {
         super.onCreate();
