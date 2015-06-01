@@ -1,5 +1,6 @@
 package com.cursor.common;
 
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cursor.common.utils.LifeCycleUtils;
@@ -18,14 +19,28 @@ public class CommonActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         if (exitWhenDblClick) {
             if ((System.currentTimeMillis() - lastTimePressedBack) > 2000) {
                 lastTimePressedBack = System.currentTimeMillis();
             } else {
                 LifeCycleUtils.exitApplication();
             }
+        }else{
+            super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        deploy();
+    }
+
+    /**
+     * deploy the
+     */
+    protected void deploy(){
+        setExitWhenDblClick(false);
     }
 
     /**

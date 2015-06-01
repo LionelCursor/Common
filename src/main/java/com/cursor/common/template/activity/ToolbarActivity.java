@@ -1,17 +1,17 @@
 package com.cursor.common.template.activity;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cursor.common.AppData;
 import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
 import com.orhanobut.logger.Logger;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * USER: ldx
@@ -26,6 +26,8 @@ public class ToolbarActivity extends BaseTemplateActivity {
 
     private Toolbar mToolbar;
 
+    private TextView mTitleText;
+
     private RelativeLayout mContainer;
 
     @Override
@@ -34,19 +36,48 @@ public class ToolbarActivity extends BaseTemplateActivity {
         if (CommonConfig.DEBUG) Logger.d(TAG, "onCreate");
         setContentViewInner(R.layout.toolbar_activity_content_root);
         mToolbar = (Toolbar) findViewById(R.id.common_toolbar);
+        mTitleText = (TextView) findViewById(R.id.common_title_text);
         mContainer = (RelativeLayout) findViewById(R.id.common_container);
+        setTitle(getTitle());
     }
 
-    protected Toolbar getToolbar(){
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        LayoutInflater inflater = LayoutInflater.from(AppData.getContext());
+        View view = inflater.inflate(R.layout.toolbar_activity_content_root, mContainer, false);
+        mContainer.addView(view);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        mContainer.addView(view);
+    }
+
+    private void setContentViewInner(int layoutResID) {
+        super.setContentView(layoutResID);
+    }
+
+    public Toolbar getToolbar() {
         return mToolbar;
     }
 
     @Override
-    public void setContentView(int layoutResID) {
-        View.inflate(AppData.getContext(), layoutResID, mContainer);
+    public void setTitle(CharSequence title) {
+        try{
+            mTitleText.setText(title);
+        }catch (NullPointerException e){
+            super.setTitle(title);
+        }
     }
 
-    public void setContentViewInner(int layoutResID){
-        super.setContentView(layoutResID);
+    @Override
+    public void setTitle(int titleId) {
+        //NullPointerException
+        try {
+            mTitleText.setText(titleId);
+        }catch (NullPointerException e){
+            super.setTitle(titleId);
+        }
     }
+
 }

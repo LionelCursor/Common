@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="main_layout" type="id"/>
-    <item name="tabs_layout" type="id"/>
+    <!-- tabs activity -->
+    <item name="common_tabs_activity_main_layout" type="id"/>
+    <item name="common_tabs_activity_tabs_layout" type="id"/>
+    <!-- toolbar activity -->
     <item name="common_toolbar" type="id"/>
     <item name="common_container" type="id"/>
 </resources>

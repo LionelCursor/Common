@@ -106,15 +106,15 @@ public abstract class TabsActivity extends ToolbarActivity{
         RelativeLayout root = new RelativeLayout(AppData.getContext());
         //tab layout
         mTabs = getTabsLayout() == null ? generateTabLayout() : getTabsLayout();
-        mTabs.setId(R.id.tabs_layout);
+        mTabs.setId(R.id.common_tabs_activity_tabs_layout);
         LayoutParams lpOfTabs = new LayoutParams(MATCH_PARENT, DisplayUtils.dip2px(mTabHeight));
         lpOfTabs.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         root.addView(mTabs, lpOfTabs);
         //main layout
         RelativeLayout mainLayout = new RelativeLayout(AppData.getContext());
-        mainLayout.setId(R.id.main_layout);
+        mainLayout.setId(R.id.common_tabs_activity_main_layout);
         LayoutParams lpOfMainLayout = new LayoutParams(MATCH_PARENT,MATCH_PARENT);
-        lpOfMainLayout.addRule(RelativeLayout.ABOVE,R.id.tabs_layout);
+        lpOfMainLayout.addRule(RelativeLayout.ABOVE,R.id.common_tabs_activity_tabs_layout);
         root.addView(mainLayout, lpOfMainLayout);
 
         return root;
@@ -265,7 +265,7 @@ public abstract class TabsActivity extends ToolbarActivity{
      */
     public void fillWithFragment(Fragment fragment) {
         if (CommonConfig.DEBUG) Logger.d(TAG, "fragment : " + fragment.getClass().getSimpleName());
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.common_tabs_activity_main_layout, fragment).commit();
     }
 
     public void setmTabsCount(int count){
@@ -290,6 +290,9 @@ public abstract class TabsActivity extends ToolbarActivity{
 
     //================== PROTECTED METHOD ========================
 
+    /**
+     * The only thing you have to override
+     */
     protected void onPreDataInit() {
         mTabsCount = 0;
         mInitFragmentIndex = 0;
