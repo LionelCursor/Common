@@ -1,6 +1,6 @@
 package com.cursor.common;
 
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.cursor.common.utils.LifeCycleUtils;
 
@@ -10,7 +10,7 @@ import com.cursor.common.utils.LifeCycleUtils;
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
  */
-public class CommonActivity extends FragmentActivity{
+public class CommonActivity extends AppCompatActivity{
 
     private boolean exitWhenDblClick = false;
 
@@ -18,7 +18,7 @@ public class CommonActivity extends FragmentActivity{
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         if (exitWhenDblClick) {
             if ((System.currentTimeMillis() - lastTimePressedBack) > 2000) {
                 lastTimePressedBack = System.currentTimeMillis();

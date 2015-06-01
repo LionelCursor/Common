@@ -2,4 +2,6 @@
 <resources>
     <item name="main_layout" type="id"/>
     <item name="tabs_layout" type="id"/>
+    <item name="common_toolbar" type="id"/>
+    <item name="common_container" type="id"/>
 </resources>

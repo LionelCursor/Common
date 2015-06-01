@@ -1,4 +1,4 @@
-package com.cursor.common.template;
+package com.cursor.common.template.activity;
 
 import com.cursor.common.CommonActivity;
 

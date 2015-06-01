@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="black00">#00000000</color>
+    <color name="black01">#19000000</color>
+    <color name="black02">#32000000</color>
+    <color name="black03">#4b000000</color>
+    <color name="black04">#64000000</color>
+    <color name="black05">#7d000000</color>
+    <color name="black06">#96000000</color>
+    <color name="black07">#af000000</color>
+    <color name="black08">#c8000000</color>
+    <color name="black09">#e1000000</color>
+    <color name="black10">#FF000000</color>
+
+    <color name="default_main_color">#e8252525</color>
+
+
+</resources>
