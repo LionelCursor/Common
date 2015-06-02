@@ -149,7 +149,6 @@ public abstract class TabsActivity extends ToolbarActivity{
     }
 
     private void attachTabs(View v, ViewGroup viewGroup) {
-        if(CommonConfig.DEBUG) Logger.d(TAG, "attachTabs");
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0 , MATCH_PARENT, 1);
         viewGroup.addView(v, lp);
         v.setTag(viewGroup.indexOfChild(v));
@@ -183,8 +182,6 @@ public abstract class TabsActivity extends ToolbarActivity{
      * postDeploy tabs below
      */
     private void deployTabs() {
-        if (CommonConfig.DEBUG) Logger.d(TAG, "deployTabs");
-
         if (mTabs == null) {
             throw new IllegalStateException("mTabs is null");
         }
@@ -198,8 +195,6 @@ public abstract class TabsActivity extends ToolbarActivity{
     }
 
     private void cleanSelectedTabs() {
-        if (CommonConfig.DEBUG) Logger.d(TAG, "cleanSelectedTabs");
-
         if (mTabs == null) {
             throw new IllegalStateException("mTabs is null");
         }
