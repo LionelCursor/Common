@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * USER: ldx
@@ -68,7 +67,7 @@ public abstract class TabsActivity extends ToolbarActivity{
     /**
      * height of tabs layout ,unit dp
      */
-    private int mTabHeight = 50;
+    private int mTabHeight = 40;
 
     /**
      * Layout of tabs below to be set.
@@ -90,7 +89,7 @@ public abstract class TabsActivity extends ToolbarActivity{
         onPreDataInit();
         setContentView(generateViewRoot());
         deployTabs();
-        fillWithFragment(getFragmentWithIndex(mInitFragmentIndex));
+//        fillWithFragment(getFragmentWithIndex(mInitFragmentIndex));
         //Here is a bug I don't know why. When I delete the line below, when I touch one tab, the
         //last tab will pressed either only if I touch it.
         onTabSelected(mTabs.getChildAt(mInitFragmentIndex),mInitFragmentIndex);
@@ -145,13 +144,13 @@ public abstract class TabsActivity extends ToolbarActivity{
 
     private View generateEmptyTabView(){
         ImageView image = new ImageView(AppData.getContext());
-        image.setMinimumHeight(50);
+        image.setMinimumHeight(DisplayUtils.dip2px(mTabHeight));
         return image;
     }
 
     private void attachTabs(View v, ViewGroup viewGroup) {
         if(CommonConfig.DEBUG) Logger.d(TAG, "attachTabs");
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0 , WRAP_CONTENT, 1);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0 , MATCH_PARENT, 1);
         viewGroup.addView(v, lp);
         v.setTag(viewGroup.indexOfChild(v));
     }
