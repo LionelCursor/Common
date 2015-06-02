@@ -33,13 +33,23 @@ public class CommonActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deploy();
+        preDeploy();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        postDeploy();
+    }
+
+    protected void preDeploy(){
+
     }
 
     /**
-     * deploy the
+     * postDeploy the
      */
-    protected void deploy(){
+    protected void postDeploy(){
         setExitWhenDblClick(false);
     }
 

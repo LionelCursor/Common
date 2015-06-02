@@ -91,6 +91,9 @@ public abstract class TabsActivity extends ToolbarActivity{
         setContentView(generateViewRoot());
         deployTabs();
         fillWithFragment(getFragmentWithIndex(mInitFragmentIndex));
+        //Here is a bug I don't know why. When I delete the line below, when I touch one tab, the
+        //last tab will pressed either only if I touch it.
+        onTabSelected(mTabs.getChildAt(mInitFragmentIndex),mInitFragmentIndex);
     }
 
     //======================== PRIVATE METHOD =========================
@@ -178,7 +181,7 @@ public abstract class TabsActivity extends ToolbarActivity{
     }
 
     /**
-     * deploy tabs below
+     * postDeploy tabs below
      */
     private void deployTabs() {
         if (CommonConfig.DEBUG) Logger.d(TAG, "deployTabs");
@@ -202,7 +205,8 @@ public abstract class TabsActivity extends ToolbarActivity{
             throw new IllegalStateException("mTabs is null");
         }
         View v;
-        for (int i = 0; i < mTabsCount; i++) {
+        for (int i = 0; i < mTabsCount; i++){
+            Logger.e("i = "+i);
             v = mTabs.getChildAt(i);
             v.setBackgroundDrawable(generateColorSelector());
             onDeployTabs(v, i);

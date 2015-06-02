@@ -63,21 +63,12 @@ public class ToolbarActivity extends BaseTemplateActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        try{
-            mTitleText.setText(title);
-        }catch (NullPointerException e){
-            super.setTitle(title);
-        }
+        mTitleText.setText(title);
     }
 
     @Override
     public void setTitle(int titleId) {
-        //NullPointerException
-        try {
-            mTitleText.setText(titleId);
-        }catch (NullPointerException e){
-            super.setTitle(titleId);
-        }
+        mTitleText.setText(titleId);
     }
 
 }
