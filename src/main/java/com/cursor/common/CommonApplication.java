@@ -3,7 +3,6 @@ package com.cursor.common;
 import android.app.Application;
 
 import com.cursor.common.utils.DisplayUtils;
-import com.orhanobut.logger.Logger;
 
 /**
  * USER: ldx
@@ -21,6 +20,5 @@ public class CommonApplication extends Application{
         super.onCreate();
         AppData.init(this);
         DisplayUtils.init(this);
-        Logger.init();
     }
 }

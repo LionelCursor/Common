@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.cursor.common.AppData;
 import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
-import com.orhanobut.logger.Logger;
+import com.cursor.common.utils.Logger;
 
 /**
  * USER: ldx

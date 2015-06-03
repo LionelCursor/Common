@@ -16,8 +16,8 @@ import com.cursor.common.AppData;
 import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
 import com.cursor.common.utils.DisplayUtils;
+import com.cursor.common.utils.Logger;
 import com.cursor.common.utils.SelectorUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.cursor.common.template.fragment;
+package com.cursor.common.template.fragment.recycler;
 
 /**
  * USER: ldx
