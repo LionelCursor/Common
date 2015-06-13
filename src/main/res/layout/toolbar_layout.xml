@@ -5,4 +5,5 @@
         android:id="@+id/common_title_text"
         style="@style/Common.TextAppearance.Toolbar"
         android:layout_centerInParent="true" />
+    <RoundCornerTab
 </RelativeLayout>

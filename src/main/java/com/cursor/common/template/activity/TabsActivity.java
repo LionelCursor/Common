@@ -15,6 +15,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import com.cursor.common.AppData;
 import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
+import com.cursor.common.template.activity.toolbar.ToolbarActivity;
 import com.cursor.common.utils.DisplayUtils;
 import com.cursor.common.utils.Logger;
 import com.cursor.common.utils.SelectorUtils;
@@ -29,8 +30,17 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * DATE: 2015/5/30
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
+ *
+ * ********************************
+ * FEATURES:
+ * DONE- Contents controlled by tabs below
+ * DONE- Style and events of tabs can be easily customized {@link #onDeployTabs(View, int)}
+ *          {@link #onTabSelected(View, int)}
+ * TODO- Fragment can be find by tag instead of replace every time
+ * TODO- Use TabGroup instead
+ *
  */
-public abstract class TabsActivity extends ToolbarActivity{
+public abstract class TabsActivity extends ToolbarActivity {
 
     //Debug TAG
     private static final String TAG = "TabsActivity";
@@ -322,7 +332,6 @@ public abstract class TabsActivity extends ToolbarActivity{
         public void onClick(View v) {
             int index = (int) v.getTag();
             onTabSelected(v, index);
-        }
-    }
+    }}
 
 }
