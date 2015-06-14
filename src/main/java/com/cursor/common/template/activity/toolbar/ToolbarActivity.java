@@ -3,6 +3,8 @@ package com.cursor.common.template.activity.toolbar;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,9 @@ import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
 import com.cursor.common.template.activity.BaseTemplateActivity;
 import com.cursor.common.utils.Logger;
+import com.cursor.common.widget.tabgroup.OnTabSelectedObserver;
+import com.cursor.common.widget.tabgroup.RoundCornerTabView;
+import com.cursor.common.widget.tabgroup.Tab;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,8 +31,8 @@ import java.lang.annotation.RetentionPolicy;
  * *************************************
  * FEATURES
  * DONE - {@link #setTitle(int)}
- * TODO - Set MODE
- * TODO - Customized tabs for viewpager
+ * DONE - Set MODE
+ * DONE - Customized tabs for viewpager
  * TODO - Original Actionbar mode
  */
 public class ToolbarActivity extends BaseTemplateActivity {
@@ -53,6 +58,8 @@ public class ToolbarActivity extends BaseTemplateActivity {
     private RelativeLayout mToolbarContainer;
     private RelativeLayout mContentContainer;
 
+    private RoundCornerTabView mTabView;
+
     private CharSequence mTitle;
 
     @Override
@@ -64,6 +71,7 @@ public class ToolbarActivity extends BaseTemplateActivity {
         mTitleText = (TextView) findViewById(R.id.common_title_text);
         mContentContainer = (RelativeLayout) findViewById(R.id.common_container);
         mToolbarContainer = (RelativeLayout) findViewById(R.id.toolbar_container);
+        mTabView = (RoundCornerTabView) findViewById(R.id.common_title_tabs);
         setTitle(getTitle());
     }
 
@@ -107,14 +115,13 @@ public class ToolbarActivity extends BaseTemplateActivity {
 
             if ((changed & DISPLAY_SHOW_TABS) != 0) {
                 if ((newOptions & DISPLAY_SHOW_TABS) != 0) {
-
+                    mTabView.setVisibility(View.VISIBLE);
                 } else {
-
+                    mTabView.setVisibility(View.GONE);
                 }
             }
         }
     }
-
 
     @Override
     public void setTitle(CharSequence title) {
@@ -128,9 +135,26 @@ public class ToolbarActivity extends BaseTemplateActivity {
         mTitleText.setText(mTitle);
     }
 
-    public void setCustomView(View view){
+    public void setCustomView(View view) {
         mToolbarContainer.addView(view);
     }
+
+    public void addTab(Tab tab) {
+        mTabView.addTab(tab);
+    }
+
+    public void addTabListener(OnTabSelectedObserver observer) {
+        mTabView.setTabSelectedListener(observer);
+    }
+
+    public void attachViewPager(ViewPager viewPager){
+        setDisplayMode(DISPLAY_SHOW_TABS);
+        PagerAdapter adapter = viewPager.getAdapter();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            addTab(mTabView.newTab((String) adapter.getPageTitle(i)));
+        }
+        viewPager.addOnPageChangeListener(mTabView.getViewPagerListener());
+   }
 
 
 

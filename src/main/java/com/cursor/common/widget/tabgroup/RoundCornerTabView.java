@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -65,9 +66,12 @@ public class RoundCornerTabView extends BaseTabView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.save();
         drawTabs(canvas);
-        canvas.restore();
+    }
+
+    @Override
+    protected void onTabSelected() {
+        invalidate();
     }
 
     //My code experience is really poor. Please use WRAP_CONTENT
@@ -152,23 +156,26 @@ public class RoundCornerTabView extends BaseTabView {
                     endX - mArcMinorAxis, endY, mPaintBackground);
         } else {
             //draw tab middle
-            canvas.drawRect(mTabWidth*indexOfSlt,0,
-                    mTabWidth*(indexOfSlt+1),endY,mPaintBackground);
+            canvas.drawRect(mTabWidth * indexOfSlt, 0,
+                    mTabWidth * (indexOfSlt + 1), endY, mPaintBackground);
         }
 
         mPaintWords.setColor(0x0);
 
         //draw selected tab title text
         canvas.drawText(((TextTab) getTabs().get(indexOfSlt)).getTitle(),
-                mTabWidth*indexOfSlt+wordPaddingX,wordPaddingY,mPaintWords);
+                mTabWidth * indexOfSlt + wordPaddingX, wordPaddingY, mPaintWords);
 
         mPaintWords.setColor(mSelectedColor);
     }
 
     @Override
     protected int indexOfTab(MotionEvent event) {
+        //This is a busy method. So prefer use binary search
         for (int i = 0; i < getTabCount(); i++) {
-            getTabs().get(i);
+            if(event.getX()<(i+1)*mTabWidth){
+                return i;
+            }
         }
         return 0;
     }
@@ -203,6 +210,19 @@ public class RoundCornerTabView extends BaseTabView {
         this.mUnSelectedTabColor = mUnSelectedTabColor;
         init();
         invalidate();
+    }
+
+    public Tab newTab(String title) {
+        return new TextTab(title);
+    }
+
+    public ViewPager.OnPageChangeListener getViewPagerListener() {
+        return new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                selectTabView(position);
+            }
+        };
     }
 
 }

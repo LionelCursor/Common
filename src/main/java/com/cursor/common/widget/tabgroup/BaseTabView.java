@@ -38,8 +38,8 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
         super(context);
     }
 
-    public BaseTabView(Context context, AttributeSet attrs){
-        super(context,attrs);
+    public BaseTabView(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     //=============================LIFECYCLE=================================
@@ -90,14 +90,21 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
 
     @Override
     public void performTabSelected(int position) {
+        //Draw ui
+        selectTabView(position);
+        //Notify the client
+        notifyTabSelected(mCurPosSlt, mOldPosSlt);
+    }
+
+    //draw ui
+    protected void selectTabView(int position) {
         if (position < 0)
             throw new IllegalStateException("Tab click position won't be less than 0");
         if (position >= getTabCount())
             throw new IllegalStateException("Tab click position won't be more than size of mTabs");
         mOldPosSlt = mCurPosSlt;
         mCurPosSlt = position;
-        //Notify the client
-        notifyTabSelected(mCurPosSlt, mOldPosSlt);
+        //draw ui
         onTabSelected();
     }
 
@@ -145,5 +152,5 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
      *
      * @return -1 when MotionEvent out of this tab group
      */
-    protected abstract int indexOfTab(MotionEvent event);
+    protected abstract int indexOfTab(MotionEvent event);//busy method
 }

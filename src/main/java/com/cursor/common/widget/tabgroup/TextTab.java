@@ -7,6 +7,10 @@ package com.cursor.common.widget.tabgroup;
  * PROJECT: MicroTravelNotes
  */
 public class TextTab implements Tab{
+    public TextTab(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }
