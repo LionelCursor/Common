@@ -2,6 +2,8 @@ package com.cursor.common.widget.tabgroup;
 
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -20,13 +22,13 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
 
     private static final String TAG = "RoundCornerTabAdapter";
 
-    private int mOldPosSlt = 0;
+    protected int mOldPosSlt = 0;
 
-    private int mOldPosHover = 0;
+    protected int mOldPosHover = 0;
 
-    private int mCurPosSlt = 0;
+    protected int mCurPosSlt = 0;
 
-    private int mCurPosHover = 0;
+    protected int mCurPosHover = 0;
 
     private List<Tab> mTabs = new ArrayList<>();
 
@@ -36,12 +38,53 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
         super(context);
     }
 
+    public BaseTabView(Context context, AttributeSet attrs){
+        super(context,attrs);
+    }
+
+    //=============================LIFECYCLE=================================
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         //Do nothing
     }
 
-    public int getCount() {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                mOldPosHover = mCurPosHover;
+                mCurPosHover = indexOfTab(event);
+                if (mCurPosHover == mOldPosHover) {
+                    break;
+                }
+                onEventHover(mOldPosHover, mCurPosHover);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (indexOfTab(event) == -1) {
+                    break;
+                }
+                performTabSelected(mCurPosHover);
+                break;
+
+        }
+        return true;
+    }
+
+    //==========================PUBLIC METHOD=============================
+
+    public int getTabCount() {
         return mTabs == null ? 0 : mTabs.size();
     }
 
@@ -49,13 +92,12 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
     public void performTabSelected(int position) {
         if (position < 0)
             throw new IllegalStateException("Tab click position won't be less than 0");
-        if (position >= getCount())
+        if (position >= getTabCount())
             throw new IllegalStateException("Tab click position won't be more than size of mTabs");
         mOldPosSlt = mCurPosSlt;
         mCurPosSlt = position;
         //Notify the client
         notifyTabSelected(mCurPosSlt, mOldPosSlt);
-        //TODO - Selected child class
         onTabSelected();
     }
 
@@ -86,27 +128,8 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
         requestLayout();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                mOldPosHover = mCurPosHover;
-                mCurPosHover = indexOfTab(event);
-                if (mCurPosHover == mOldPosHover) {
-                    break;
-                }
-                onEventHover(mOldPosHover, mCurPosHover);
-                break;
-            case MotionEvent.ACTION_UP:
-                if (indexOfTab(event) == -1) {
-                    break;
-                }
-                performTabSelected(mCurPosHover);
-                break;
-
-        }
-        return true;
+    public List<Tab> getTabs() {
+        return mTabs;
     }
 
     protected void onEventHover(int oldHoverPos, int curHoverPos) {
