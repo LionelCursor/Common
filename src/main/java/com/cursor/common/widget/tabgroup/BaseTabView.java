@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
  * **********************************
  * DONE- A selectable tab group which has robust observable system
  */
-public abstract class BaseTabView extends ViewGroup implements ITabGroup {
+public abstract class BaseTabView extends View implements ITabGroup {
 
     private static final String TAG = "RoundCornerTabAdapter";
 
@@ -82,6 +84,25 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
         return true;
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
+
+    private ViewTreeObserver.OnGlobalLayoutListener getLayoutListener() {
+        return new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                invalidate();
+            }
+        };
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+    }
+
     //==========================PUBLIC METHOD=============================
 
     public int getTabCount() {
@@ -96,16 +117,21 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
         notifyTabSelected(mCurPosSlt, mOldPosSlt);
     }
 
+    private void checkPosition(int position) {
+        if (position < 0)
+            throw new IllegalStateException("Tab position won't be less than 0");
+        if (position >= getTabCount())
+            throw new IllegalStateException("Tab position won't be more than size of mTabs");
+    }
+
     //draw ui
     protected void selectTabView(int position) {
-        if (position < 0)
-            throw new IllegalStateException("Tab click position won't be less than 0");
-        if (position >= getTabCount())
-            throw new IllegalStateException("Tab click position won't be more than size of mTabs");
+        checkPosition(position);
         mOldPosSlt = mCurPosSlt;
         mCurPosSlt = position;
         //draw ui
         onTabSelected();
+        invalidate();
     }
 
     private void notifyTabSelected(int curPos, int oldPos) {
@@ -127,12 +153,12 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
     @Override
     public void addTab(Tab tab) {
         mTabs.add(tab);
-        requestLayout();
+        invalidate();
     }
 
     public void removeTab(Tab tab) {
         mTabs.remove(tab);
-        requestLayout();
+        invalidate();
     }
 
     public List<Tab> getTabs() {
@@ -153,4 +179,23 @@ public abstract class BaseTabView extends ViewGroup implements ITabGroup {
      * @return -1 when MotionEvent out of this tab group
      */
     protected abstract int indexOfTab(MotionEvent event);//busy method
+
+
+    public class SimpleOnTabSelectedObserver implements OnTabSelectedObserver {
+
+        @Override
+        public void onTabSelected(Tab tab, int position) {
+            //write your code
+        }
+
+        @Override
+        public void onTabUnselected(Tab tab, int position) {
+            //write your code
+        }
+
+        @Override
+        public void onTabReselected(Tab tab, int position) {
+            //write your code
+        }
+    }
 }

@@ -26,21 +26,36 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter
     public static final String TAG = "FragmentPagerAdapter";
 
     public static final class Info{
-        private final Class clazz;
+        private Class clazz;
 
-        private final Bundle args;
+        private Bundle args;
+
+        private String title;
+
+        public Info(Class clazz, @Nullable Bundle args, @Nullable String title) {
+            this.clazz = clazz;
+            this.args = args;
+            this.title = title;
+        }
+
+        public Info(Class clazz, String title) {
+            this.clazz = clazz;
+            this.title = title;
+        }
 
         public Info(Class clazz, @Nullable Bundle args) {
             this.clazz = clazz;
             this.args = args;
+        }
+
+        public Info(Class clazz) {
+            this.clazz = clazz;
         }
     }
 
     private List<Info> mClazzInfoes = new ArrayList<>();
 
     private ViewPager mViewPager;
-
-
 
     public FragmentPagerAdapter(FragmentManager fm, ViewPager viewPager) {
         super(fm);
@@ -76,6 +91,13 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public int getCount() {
         return mClazzInfoes.size();
+    }
+
+    @Override
+    @Nullable
+    public CharSequence getPageTitle(int position) {
+        Logger.e("title %s",mClazzInfoes.get(position).title);
+        return mClazzInfoes.get(position).title;
     }
 
     //ViewPager.OnPageChangeAdapter

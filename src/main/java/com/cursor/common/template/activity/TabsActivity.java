@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +31,14 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * DATE: 2015/5/30
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
- *
+ * <p>
  * ********************************
  * FEATURES:
  * DONE- Contents controlled by tabs below
  * DONE- Style and events of tabs can be easily customized {@link #onDeployTabs(View, int)}
- *          {@link #onTabSelected(View, int)}
- * TODO- Fragment can be find by tag instead of replace every time
+ * {@link #onTabSelected(View, int)}
+ * DONE- Fragment can be find by tag instead of replace every time
  * TODO- Use TabGroup instead
- *
  */
 public abstract class TabsActivity extends ToolbarActivity {
 
@@ -50,6 +50,10 @@ public abstract class TabsActivity extends ToolbarActivity {
      * {@link Fragment#instantiate(Context, String)}
      */
     private List<String> mFragmentNames;
+    /**
+     * store all the instantiated fragments
+     */
+    private Fragment[] mFragmentsArray;
     /**
      * By default, the first fragment was set to init the main layout
      */
@@ -102,7 +106,7 @@ public abstract class TabsActivity extends ToolbarActivity {
 //        fillWithFragment(getFragmentWithIndex(mInitFragmentIndex));
         //Here is a bug I don't know why. When I delete the line below, when I touch one tab, the
         //last tab will pressed either only if I touch it.
-        onTabSelected(mTabs.getChildAt(mInitFragmentIndex),mInitFragmentIndex);
+        onTabSelected(mTabs.getChildAt(mInitFragmentIndex), mInitFragmentIndex);
     }
 
     //======================== PRIVATE METHOD =========================
@@ -125,8 +129,8 @@ public abstract class TabsActivity extends ToolbarActivity {
         //main layout
         RelativeLayout mainLayout = new RelativeLayout(AppData.getContext());
         mainLayout.setId(R.id.common_tabs_activity_main_layout);
-        LayoutParams lpOfMainLayout = new LayoutParams(MATCH_PARENT,MATCH_PARENT);
-        lpOfMainLayout.addRule(RelativeLayout.ABOVE,R.id.common_tabs_activity_tabs_layout);
+        LayoutParams lpOfMainLayout = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        lpOfMainLayout.addRule(RelativeLayout.ABOVE, R.id.common_tabs_activity_tabs_layout);
         root.addView(mainLayout, lpOfMainLayout);
 
         return root;
@@ -146,20 +150,20 @@ public abstract class TabsActivity extends ToolbarActivity {
         } else {
             for (int i = 0; i < mTabsCount; i++) {
                 View v = generateEmptyTabView();
-                attachTabs(v,layout);
+                attachTabs(v, layout);
             }
         }
         return layout;
     }
 
-    private View generateEmptyTabView(){
+    private View generateEmptyTabView() {
         ImageView image = new ImageView(AppData.getContext());
         image.setMinimumHeight(DisplayUtils.dip2px(mTabHeight));
         return image;
     }
 
     private void attachTabs(View v, ViewGroup viewGroup) {
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0 , MATCH_PARENT, 1);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, MATCH_PARENT, 1);
         viewGroup.addView(v, lp);
         v.setTag(viewGroup.indexOfChild(v));
     }
@@ -170,7 +174,7 @@ public abstract class TabsActivity extends ToolbarActivity {
         return image;
     }
 
-    private Fragment getFragmentWithIndex(int index) {
+    private Fragment newFragmentWithIndexOfName(int index) {
         if (CommonConfig.DEBUG) Logger.d(TAG, "getFragmentWithIndex : index = " + index);
         if (index >= mFragmentNames.size()) {
             throw new IllegalStateException("Index of fragment out of bounds");
@@ -209,8 +213,8 @@ public abstract class TabsActivity extends ToolbarActivity {
             throw new IllegalStateException("mTabs is null");
         }
         View v;
-        for (int i = 0; i < mTabsCount; i++){
-            Logger.e("i = "+i);
+        for (int i = 0; i < mTabsCount; i++) {
+            Logger.e("i = " + i);
             v = mTabs.getChildAt(i);
             v.setBackgroundDrawable(generateColorSelector());
             onDeployTabs(v, i);
@@ -276,23 +280,42 @@ public abstract class TabsActivity extends ToolbarActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.common_tabs_activity_main_layout, fragment).commit();
     }
 
-    public void setmTabsCount(int count){
-        mTabsCount = count;
+    /**
+     * get Fragment in proper position
+     *
+     * @param position the index of Fragment
+     * @return null if position is bigger than mTabsCount
+     */
+    public @Nullable Fragment getFragment(int position) {
+        if (position >= mTabsCount) {
+            return null;
+        }
+        Fragment result = mFragmentsArray[position];
+        if (result != null) {
+            return result;
+        } else {
+            return newFragmentWithIndexOfName(position);
+        }
     }
 
-    public void setmInitFragmentIndex(int index){
+    public void setmTabsCount(int count) {
+        mTabsCount = count;
+        mFragmentsArray = new Fragment[count];
+    }
+
+    public void setmInitFragmentIndex(int index) {
         mInitFragmentIndex = index;
     }
 
-    public List<String> getmFragmentNames(){
+    public List<String> getmFragmentNames() {
         return mFragmentNames;
     }
 
-    public List<Integer> getmTabImages(){
+    public List<Integer> getmTabImages() {
         return mTabImages;
     }
 
-    public List<View> getmTabViews(){
+    public List<View> getmTabViews() {
         return mTabViews;
     }
 
@@ -317,7 +340,7 @@ public abstract class TabsActivity extends ToolbarActivity {
         if (CommonConfig.DEBUG) Logger.d(TAG, "onTabSelected index = " + index);
         cleanSelectedTabs();
         v.setBackgroundColor(mColorTabBackgroundPresssed);
-        fillWithFragment(getFragmentWithIndex(index));
+        fillWithFragment(getFragment(index));
     }
 
     /**
@@ -332,6 +355,7 @@ public abstract class TabsActivity extends ToolbarActivity {
         public void onClick(View v) {
             int index = (int) v.getTag();
             onTabSelected(v, index);
-    }}
+        }
+    }
 
 }

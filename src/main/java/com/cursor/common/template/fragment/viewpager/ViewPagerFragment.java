@@ -1,7 +1,6 @@
 package com.cursor.common.template.fragment.viewpager;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -30,24 +29,20 @@ public abstract class ViewPagerFragment extends BaseTemplateFragment {
      */
     public static final String ARG_CONTENTS = "contents";
 
-    /**
-     * The clazz name of fragments in this viewpager
-     */
     private List<String> mParamsContents;
 
-    private OnFragmentInteractionListener mListener;
+    private OnViewPagerFinishedListener mViewPagerListener;
 
     private ViewPager mViewPager;
 
     private FragmentPagerAdapter mAdapter;
-
 
     //===================================LIFECYCLE=======================================
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!=null){
+        if (getArguments() != null) {
             mParamsContents = getArguments().getStringArrayList(ARG_CONTENTS);
         }
 
@@ -58,28 +53,33 @@ public abstract class ViewPagerFragment extends BaseTemplateFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mViewPagerListener = (OnViewPagerFinishedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mViewPagerListener = null;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewpager,container,false);
-        Logger.e(TAG,"onCreateView");
+        View view = inflater.inflate(R.layout.fragment_viewpager, container, false);
+        Logger.e(TAG, "onCreateView");
         mViewPager = (ViewPager) view.findViewById(R.id.fragment_viewpager_viewpager);
-        mAdapter = new FragmentPagerAdapter(getChildFragmentManager(),mViewPager);
+        mAdapter = new FragmentPagerAdapter(getChildFragmentManager(), mViewPager);
         mAdapter.addPages(getPages());
         mViewPager.setAdapter(mAdapter);
+        if (mViewPagerListener != null) {
+            mViewPagerListener.onViewPagerFinished(mViewPager);
+        }
         return view;
     }
 
@@ -95,11 +95,15 @@ public abstract class ViewPagerFragment extends BaseTemplateFragment {
         return mViewPager;
     }
 
+    public void setViewPagerFinishedListener(OnViewPagerFinishedListener listener) {
+        mViewPagerListener = listener;
+    }
+
     //=========================PROTECTED METHOD===============================
 
     public abstract List<FragmentPagerAdapter.Info> getPages();
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    public interface OnViewPagerFinishedListener {
+        void onViewPagerFinished(ViewPager viewPager);
     }
 }

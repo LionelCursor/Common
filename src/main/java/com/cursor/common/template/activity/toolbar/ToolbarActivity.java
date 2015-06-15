@@ -15,7 +15,9 @@ import com.cursor.common.AppData;
 import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
 import com.cursor.common.template.activity.BaseTemplateActivity;
+import com.cursor.common.template.fragment.viewpager.FragmentPagerAdapter;
 import com.cursor.common.utils.Logger;
+import com.cursor.common.widget.tabgroup.BaseTabView;
 import com.cursor.common.widget.tabgroup.OnTabSelectedObserver;
 import com.cursor.common.widget.tabgroup.RoundCornerTabView;
 import com.cursor.common.widget.tabgroup.Tab;
@@ -52,7 +54,7 @@ public class ToolbarActivity extends BaseTemplateActivity {
     public static final int DISPLAY_ORIGINAL = 0x1;
     public static final int DISPLAY_SHOW_TITLE = 0x1 << 1;
     public static final int DISPLAY_SHOW_TABS = 0x1 << 2;
-    public int mDisplayOptions = 0x1;
+    public int mDisplayOptions = 0x1 << 1;
     private Toolbar mToolbar;
     private TextView mTitleText;
     private RelativeLayout mToolbarContainer;
@@ -65,7 +67,6 @@ public class ToolbarActivity extends BaseTemplateActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (CommonConfig.DEBUG) Logger.d(TAG, "onCreate");
         setContentViewInner(R.layout.toolbar_activity_content_root);
         mToolbar = (Toolbar) findViewById(R.id.common_toolbar);
         mTitleText = (TextView) findViewById(R.id.common_title_text);
@@ -147,16 +148,30 @@ public class ToolbarActivity extends BaseTemplateActivity {
         mTabView.setTabSelectedListener(observer);
     }
 
-    public void attachViewPager(ViewPager viewPager){
+    public void attachViewPager(final ViewPager viewPager){
         setDisplayMode(DISPLAY_SHOW_TABS);
         PagerAdapter adapter = viewPager.getAdapter();
         for (int i = 0; i < adapter.getCount(); i++) {
             addTab(mTabView.newTab((String) adapter.getPageTitle(i)));
         }
+        //change tab view when viewPager is changed
         viewPager.addOnPageChangeListener(mTabView.getViewPagerListener());
+        //change viewPager when tab selected
+        addTabListener(new OnTabSelectedObserver() {
+            @Override
+            public void onTabSelected(Tab tab, int position) {
+                viewPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabUnselected(Tab tab, int position) {
+
+            }
+
+            @Override
+            public void onTabReselected(Tab tab, int position) {
+            }
+        });
    }
-
-
-
 
 }

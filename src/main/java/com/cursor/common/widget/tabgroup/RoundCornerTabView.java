@@ -71,7 +71,6 @@ public class RoundCornerTabView extends BaseTabView {
 
     @Override
     protected void onTabSelected() {
-        invalidate();
     }
 
     //My code experience is really poor. Please use WRAP_CONTENT
@@ -92,6 +91,8 @@ public class RoundCornerTabView extends BaseTabView {
             case MeasureSpec.AT_MOST:
                 if (expectWidth > size) {
                     result = size;
+                } else {
+                    result = expectWidth;
                 }
                 break;
         }
@@ -108,6 +109,8 @@ public class RoundCornerTabView extends BaseTabView {
             case MeasureSpec.AT_MOST:
                 if (expectHeight > size) {
                     result = size;
+                } else {
+                    result = expectHeight;
                 }
                 break;
         }
@@ -173,7 +176,7 @@ public class RoundCornerTabView extends BaseTabView {
     protected int indexOfTab(MotionEvent event) {
         //This is a busy method. So prefer use binary search
         for (int i = 0; i < getTabCount(); i++) {
-            if(event.getX()<(i+1)*mTabWidth){
+            if (event.getX() < (i + 1) * mTabWidth) {
                 return i;
             }
         }
@@ -217,12 +220,13 @@ public class RoundCornerTabView extends BaseTabView {
     }
 
     public ViewPager.OnPageChangeListener getViewPagerListener() {
-        return new ViewPager.SimpleOnPageChangeListener(){
+        return new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 selectTabView(position);
             }
         };
     }
+
 
 }
