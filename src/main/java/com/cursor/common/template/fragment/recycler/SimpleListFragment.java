@@ -1,10 +1,9 @@
 package com.cursor.common.template.fragment.recycler;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
+import com.cursor.common.R;
 
 /**
  * USER: ldx
@@ -12,15 +11,18 @@ import android.view.ViewGroup;
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
  */
-public class SimpleListFragment extends BaseListFragment{
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
+public abstract class SimpleListFragment extends BaseListFragment {
 
     @Override
     protected int getContentResId() {
-        return 0;
+        return R.layout.fragment_simple_list;
     }
+
+    @Override
+    protected RecyclerView.LayoutManager newLayoutManager() {
+        return new LinearLayoutManager(getActivity());
+    }
+
+    @Override
+    protected abstract RecyclerView.Adapter newAdapter();
 }

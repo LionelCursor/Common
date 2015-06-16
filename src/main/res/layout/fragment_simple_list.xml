@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.cursor.common.widget.swiperefreshlayout.SmartSwipeRefreshLayout
+        android:id="@id/common_list_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RecyclerView
+            android:id="@id/common_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.cursor.common.widget.swiperefreshlayout.SmartSwipeRefreshLayout>
+</RelativeLayout>
