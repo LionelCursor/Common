@@ -6,4 +6,7 @@
     <!-- toolbar activity -->
     <item name="common_toolbar" type="id"/>
     <item name="common_container" type="id"/>
+    <!-- base list fragment-->
+    <item name="common_list_recycler_view" type="id"/>
+    <item name="common_list_swipe_refresh_layout" type="id"/>
 </resources>
