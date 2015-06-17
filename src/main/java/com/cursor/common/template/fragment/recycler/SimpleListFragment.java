@@ -4,6 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.cursor.common.R;
+import com.cursor.common.widget.recyclerview.IControllerImpl;
 
 /**
  * USER: ldx
@@ -11,7 +12,7 @@ import com.cursor.common.R;
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
  */
-public abstract class SimpleListFragment extends BaseListFragment {
+public abstract class SimpleListFragment<T> extends BaseListFragment<T> {
 
     @Override
     protected int getContentResId() {
@@ -24,5 +25,5 @@ public abstract class SimpleListFragment extends BaseListFragment {
     }
 
     @Override
-    protected abstract RecyclerView.Adapter newAdapter();
+    protected abstract IControllerImpl<T> newAdapter();
 }

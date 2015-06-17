@@ -13,7 +13,10 @@ import android.view.ViewGroup;
 import com.cursor.common.R;
 import com.cursor.common.template.fragment.BaseTemplateFragment;
 import com.cursor.common.widget.recyclerview.OnScrollBottomListener;
+import com.cursor.common.widget.recyclerview.IControllerImpl;
 import com.cursor.common.widget.swiperefreshlayout.SmartSwipeRefreshLayout;
+
+import java.util.List;
 
 /**
  * USER: ldx
@@ -21,17 +24,16 @@ import com.cursor.common.widget.swiperefreshlayout.SmartSwipeRefreshLayout;
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
  */
-public abstract class BaseListFragment extends BaseTemplateFragment {
+public abstract class BaseListFragment<T> extends BaseTemplateFragment {
 
     private static final int FIRST_PAGE = 0;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private IControllerImpl<T> mAdapter;
     private RecyclerView.ItemAnimator mItemAnimator;
     private RecyclerView.LayoutManager mLayoutManager;
-
 
     private int mPage = FIRST_PAGE;
 
@@ -94,6 +96,14 @@ public abstract class BaseListFragment extends BaseTemplateFragment {
         loadData(mPage + 1);
     }
 
+    public void addItem(T bean){
+        mAdapter.addItem(bean);
+    }
+
+    public void addItemModel(List<T> models){
+        mAdapter.addItems(models);
+    }
+
     /**
      * Get resId in sub class
      *
@@ -101,7 +111,7 @@ public abstract class BaseListFragment extends BaseTemplateFragment {
      */
     protected abstract int getContentResId();
 
-    protected abstract RecyclerView.Adapter newAdapter();
+    protected abstract IControllerImpl<T> newAdapter();
 
     protected abstract RecyclerView.LayoutManager newLayoutManager();
 
