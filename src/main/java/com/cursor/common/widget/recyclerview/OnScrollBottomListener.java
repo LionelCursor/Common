@@ -20,26 +20,26 @@ public abstract class OnScrollBottomListener extends RecyclerView.OnScrollListen
     }
 
     /**
-     * layoutManagerµÄÀàĞÍ£¨Ã¶¾Ù£©
+     * layoutManagerçš„ç±»å‹ï¼ˆæšä¸¾ï¼‰
      */
     protected LAYOUT_MANAGER_TYPE layoutManagerType;
 
     /**
-     * ×îºóÒ»¸öµÄÎ»ÖÃ
+     * æœ€åä¸€ä¸ªçš„ä½ç½®
      */
     private int[] lastPositions;
 
     /**
-     * ×îºóÒ»¸ö¿É¼ûµÄitemµÄÎ»ÖÃ
+     * æœ€åä¸€ä¸ªå¯è§çš„itemçš„ä½ç½®
      */
     private int lastVisibleItemPosition;
 /*    *//**
-     * ÊÇ·ñÕıÔÚ¼ÓÔØ
+     * æ˜¯å¦æ­£åœ¨åŠ è½½
      *//*
     private boolean isLoadingMore = false;*/
 
     /**
-     * µ±Ç°»¬¶¯µÄ×´Ì¬
+     * å½“å‰æ»‘åŠ¨çš„çŠ¶æ€
      */
     private int currentScrollState = 0;
 

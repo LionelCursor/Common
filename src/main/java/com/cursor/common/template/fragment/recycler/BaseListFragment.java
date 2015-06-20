@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.cursor.common.widget.recyclerview.OnScrollBottomListener;
 import com.cursor.common.widget.recyclerview.IControllerImpl;
 import com.cursor.common.widget.swiperefreshlayout.SmartSwipeRefreshLayout;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,12 +29,14 @@ import java.util.List;
  */
 public abstract class BaseListFragment<T> extends BaseTemplateFragment {
 
+    private static final String TAG  = "BaseListFragment";
+
     private static final int FIRST_PAGE = 0;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
-    private IControllerImpl<T> mAdapter;
+    private IControllerImpl<T> mControllerAdapter;
     private RecyclerView.ItemAnimator mItemAnimator;
     private RecyclerView.LayoutManager mLayoutManager;
 
@@ -44,7 +49,7 @@ public abstract class BaseListFragment<T> extends BaseTemplateFragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.common_list_recycler_view);
         mSwipeRefreshLayout = (SmartSwipeRefreshLayout) view.findViewById(R.id.common_list_swipe_refresh_layout);
 
-        mRecyclerView.setAdapter(mAdapter = newAdapter());
+        mRecyclerView.setAdapter(mControllerAdapter = newAdapter());
         mRecyclerView.setLayoutManager(mLayoutManager = new LinearLayoutManager(getActivity()));
 
         mItemAnimator = new DefaultItemAnimator();
@@ -89,7 +94,11 @@ public abstract class BaseListFragment<T> extends BaseTemplateFragment {
     }
 
     public void loadData(int page) {
-
+        boolean isFlushAll = page == FIRST_PAGE;
+        if(isFlushAll&&!mSwipeRefreshLayout.isRefreshing()){
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
+        onLoadData(isFlushAll, page);
     }
 
     public void loadNextPage() {
@@ -97,15 +106,16 @@ public abstract class BaseListFragment<T> extends BaseTemplateFragment {
     }
 
     public void addItem(T bean){
-        mAdapter.addItem(bean);
+        mControllerAdapter.addItem(bean);
     }
 
     public void addItemModel(List<T> models){
-        mAdapter.addItems(models);
+        Log.e(TAG,""+models.size());
+        mControllerAdapter.addItems(models);
     }
 
     /**
-     * Get resId in sub class
+     * Get resId in subclass
      *
      * @return the res id of content
      */
@@ -116,6 +126,13 @@ public abstract class BaseListFragment<T> extends BaseTemplateFragment {
     protected abstract RecyclerView.LayoutManager newLayoutManager();
 
     /**
+     * How to load data was specified in subclass.
+     * @param isAllFlush Something matters with mSwipeBackLayout
+     * @param page Which page should be load
+     */
+    protected abstract void onLoadData(boolean isAllFlush,int page);
+
+    /**
      * Invoke it after onCreateView() or it will be null
      *
      * @return The reference of recyclerView.
@@ -123,5 +140,31 @@ public abstract class BaseListFragment<T> extends BaseTemplateFragment {
     @Nullable
     public RecyclerView getmRecyclerView() {
         return mRecyclerView;
+    }
+
+    public abstract class ListResponseListener<H> extends com.cursor.common.io.net.NetResponseListener<H> {
+        private boolean isAllFlush;
+
+        private int page;
+
+        public ListResponseListener(boolean isAllFlush, int page){
+            this.isAllFlush = isAllFlush;
+            this.page = page;
+        }
+
+        @Override
+        public void onResponse(Exception e, ArrayList<H> result) {
+            super.onResponse(e, result);
+            mPage = page;
+            if(isAllFlush){
+                mControllerAdapter.clear();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            onDataLoaded(e, result);
+            mControllerAdapter.notifyDataSetChanged();
+        }
+
+        public abstract void onDataLoaded(Exception e, ArrayList<H> result);
     }
 }

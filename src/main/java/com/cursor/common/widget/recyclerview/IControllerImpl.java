@@ -46,6 +46,11 @@ public abstract class IControllerImpl<T> extends RecyclerView.Adapter<IViewImpl<
         this.notifyDataSetChanged();
     }
 
+    public void clear() {
+        mModel.clear();
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return mModel == null ? 0 : mModel.getCount();

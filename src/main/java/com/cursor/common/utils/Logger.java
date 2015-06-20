@@ -42,16 +42,16 @@ public class Logger {
         }
     }
 
-    public static void d(String TAG,String format, Object... args){
-        Log.d(TAG,buildMessage(format,args));
+    public static void d(String TAG,String format ){
+        Log.d(TAG,format);
     }
 
     public static void d(String format, Object... args) {
         Log.d(TAG, buildMessage(format, args));
     }
 
-    public static void e(String TAG,String format, Object... args){
-        Log.e(TAG, buildMessage(format,args));
+    public static void e(String TAG,String format){
+        Log.e(TAG, format);
     }
 
     public static void e(String format, Object... args) {

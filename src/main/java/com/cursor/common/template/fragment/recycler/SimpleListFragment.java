@@ -24,6 +24,4 @@ public abstract class SimpleListFragment<T> extends BaseListFragment<T> {
         return new LinearLayoutManager(getActivity());
     }
 
-    @Override
-    protected abstract IControllerImpl<T> newAdapter();
 }

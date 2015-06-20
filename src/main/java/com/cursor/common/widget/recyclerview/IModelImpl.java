@@ -1,5 +1,7 @@
 package com.cursor.common.widget.recyclerview;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,18 +13,32 @@ import java.util.List;
  */
 public class IModelImpl<T> implements IModel<T> {
 
-    List<T> mModels;
+    private List<T> mModels;
 
-    public IModelImpl() {
+    private IController<T> mController;
+
+    public IModelImpl(IController<T> controller) {
+        mController = controller;
         mModels = new ArrayList<>();
     }
 
-    public IModelImpl(List<T> models) {
+    public IModelImpl(IController<T> controller,List<T> models) {
+        mController = controller;
         if (models == null) {
             mModels = new ArrayList<>();
         } else {
             mModels = models;
         }
+    }
+
+    @Nullable
+    public IController<T> getController(){
+        return mController;
+    }
+
+    @Override
+    public void clear() {
+        mModels.clear();
     }
 
     @Override

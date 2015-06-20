@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface IModel<T> {
 
+    void clear();
+
     void addItem(T bean);
 
     void addItems(List<T> beans);
