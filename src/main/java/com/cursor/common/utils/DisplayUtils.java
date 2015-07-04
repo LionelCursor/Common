@@ -15,31 +15,31 @@ public class DisplayUtils {
 
     public static Context sContext;
 
-    public static void init(Context context){
+    public static void init(Context context) {
         sContext = context;
         sFullScreenHeight = context.getResources().getDisplayMetrics().heightPixels;
         sFullScreenWidth = context.getResources().getDisplayMetrics().widthPixels;
         sDensity = context.getResources().getDisplayMetrics().density;
     }
 
-    public static int getsFullScreenHeightInPixels(){
+    public static int getsFullScreenHeightInPixels() {
         return sFullScreenHeight;
     }
 
-    public static int getsFullScreenHeightInDp(){
+    public static int getsFullScreenHeightInDp() {
         return px2dip(sFullScreenHeight);
     }
 
-    public static int getsFullScreenWidthInPixels(){
+    public static int getsFullScreenWidthInPixels() {
         return sFullScreenWidth;
     }
 
-    public static int getsFullScreenWidthInDp(){
+    public static int getsFullScreenWidthInDp() {
         return px2dip(sFullScreenWidth);
     }
 
-    public static float getsDensity(){
-        return  sDensity;
+    public static float getsDensity() {
+        return sDensity;
     }
 
     public static int dip2px(float dpValue) {
@@ -51,4 +51,15 @@ public class DisplayUtils {
         final float scale = sContext.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    public static int sp2px(float spValue) {
+        float fontScale = sContext.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+
+    public static int px2sp(float pxValue) {
+        float fontScale = sContext.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
+    }
+
 }

@@ -13,6 +13,10 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         common:majorAxis="17dp"
-        common:minorAxis="10dp"
-        />
+        common:minorAxis="10dp" />
+    <RelativeLayout
+        android:id="@+id/common_title_view_group"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

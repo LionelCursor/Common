@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.cursor.common.R;
 import com.cursor.common.utils.DisplayUtils;
@@ -24,15 +29,13 @@ public class RoundCornerTabView extends BaseTabView {
 
     private static final String TAG = "RoundCornerTabView";
 
-    private int mStrokeWidth = DisplayUtils.dip2px(1);    //px
+    private int mStrokeWidth = DisplayUtils.dip2px(2);    //px
 
-    private int mArcMinorAxis = DisplayUtils.dip2px(10);  //px
+    private int mArcMinorAxis = DisplayUtils.dip2px(15);  //px
 
     private int mArcMajorAxis = DisplayUtils.dip2px(15);  //px
 
-    private int mTabWidth = DisplayUtils.dip2px(20);      //px
-
-    private int mTabTitleTextSize = DisplayUtils.dip2px(6);//px
+    private int mTabWidth = DisplayUtils.dip2px(40);      //px
 
     public int mSelectedColor = 0xffffffff;
 
@@ -57,8 +60,10 @@ public class RoundCornerTabView extends BaseTabView {
     }
 
     private void init() {
+        mPaintBackground.setAntiAlias(true);
         mPaintBackground.setColor(mSelectedColor);
         mPaintBackground.setStrokeWidth(mStrokeWidth);
+        mPaintWords.setAntiAlias(true);
         mPaintWords.setColor(mSelectedColor);
         mPaintWords.setTextSize(mTabTitleTextSize);
     }
@@ -101,7 +106,7 @@ public class RoundCornerTabView extends BaseTabView {
 
     private int measureHeight(int heightSpec) {
         int result;
-        int expectHeight = result = mArcMajorAxis * 2;
+        int expectHeight = result = mArcMajorAxis * 2 ;
         final int mode = MeasureSpec.getMode(heightSpec);
         final int size = MeasureSpec.getSize(heightSpec);
         switch (mode) {
@@ -126,22 +131,26 @@ public class RoundCornerTabView extends BaseTabView {
         RectF ovalStart = new RectF(0, 0, mArcMinorAxis * 2, endY);
         RectF ovalEnd = new RectF(endX - mArcMinorAxis * 2, 0, endX, endY);
         // draw border
-        canvas.drawArc(ovalStart, 90, 270, false, mPaintBackground);
+        canvas.drawArc(ovalStart, 90, 180, false, mPaintBackground);
         canvas.drawLine(
                 mArcMinorAxis, 0,
                 endX - mArcMinorAxis, 0, mPaintBackground);
         canvas.drawLine(
                 mArcMinorAxis, endY,
                 endX - mArcMinorAxis, endY, mPaintBackground);
-        canvas.drawArc(ovalEnd, -90, 90, false, mPaintBackground);
+        canvas.drawArc(ovalEnd, -90, 180, false, mPaintBackground);
 
         //draw all words
         int wordStartX = 0;
         int wordPaddingX = (mTabWidth - mTabTitleTextSize) / 2;
+        Log.e(TAG,"wordPaddingX"+wordPaddingX);
         int wordPaddingY = (endY - mTabTitleTextSize) / 2;
+        Log.e(TAG,"endY"+endY);
+        Log.e(TAG,"mTabTitleTextSize"+mTabTitleTextSize);
         for (int i = 0; i < getTabCount(); i++) {
             wordStartX = i * mTabWidth + wordPaddingX;
-            canvas.drawText(((TextTab) getTabs().get(i)).getTitle(), wordStartX, wordPaddingY, mPaintWords);
+            canvas.drawText(((TextTab) getTabs().get(i)).getTitle(), wordStartX, wordPaddingY+mTabTitleTextSize, mPaintWords);
+            Log.e(TAG,"wordPaddingY"+wordPaddingY);
         }
 
         //draw selected
@@ -150,11 +159,11 @@ public class RoundCornerTabView extends BaseTabView {
         //draw selected background
         if (indexOfSlt == 0) {
             //draw first tab background
-            canvas.drawArc(ovalStart, 90, 270, true, mPaintBackground);
+            canvas.drawArc(ovalStart, 90, 180, true, mPaintBackground);
             canvas.drawRect(mArcMinorAxis, 0, mTabWidth, endY, mPaintBackground);
         } else if (indexOfSlt == getTabCount() - 1) {
             //draw last tab background
-            canvas.drawArc(ovalEnd, -90, 90, true, mPaintBackground);
+            canvas.drawArc(ovalEnd, -90, 180, true, mPaintBackground);
             canvas.drawRect(endX - mTabWidth, 0,
                     endX - mArcMinorAxis, endY, mPaintBackground);
         } else {
@@ -163,11 +172,11 @@ public class RoundCornerTabView extends BaseTabView {
                     mTabWidth * (indexOfSlt + 1), endY, mPaintBackground);
         }
 
-        mPaintWords.setColor(0x0);
+        mPaintWords.setColor(0xff000000);
 
         //draw selected tab title text
         canvas.drawText(((TextTab) getTabs().get(indexOfSlt)).getTitle(),
-                mTabWidth * indexOfSlt + wordPaddingX, wordPaddingY, mPaintWords);
+                mTabWidth * indexOfSlt + wordPaddingX, wordPaddingY+mTabTitleTextSize, mPaintWords);
 
         mPaintWords.setColor(mSelectedColor);
     }

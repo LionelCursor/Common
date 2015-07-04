@@ -18,6 +18,7 @@ public abstract class IViewImpl<T> extends RecyclerView.ViewHolder implements IV
     public IViewImpl(IController<T> controller, View itemView) {
         super(itemView);
         mController = controller;
+        this.onViewCreated(itemView);
     }
 
     @Override

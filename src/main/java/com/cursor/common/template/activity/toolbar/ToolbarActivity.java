@@ -3,27 +3,26 @@ package com.cursor.common.template.activity.toolbar;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cursor.common.AppData;
-import com.cursor.common.CommonConfig;
 import com.cursor.common.R;
 import com.cursor.common.template.activity.BaseTemplateActivity;
-import com.cursor.common.template.fragment.viewpager.FragmentPagerAdapter;
-import com.cursor.common.utils.Logger;
-import com.cursor.common.widget.tabgroup.BaseTabView;
 import com.cursor.common.widget.tabgroup.OnTabSelectedObserver;
 import com.cursor.common.widget.tabgroup.RoundCornerTabView;
 import com.cursor.common.widget.tabgroup.Tab;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
 
 /**
  * USER: ldx
@@ -45,7 +44,8 @@ public class ToolbarActivity extends BaseTemplateActivity {
     @IntDef(flag = true, value = {
             DISPLAY_ORIGINAL,
             DISPLAY_SHOW_TITLE,
-            DISPLAY_SHOW_TABS
+            DISPLAY_SHOW_TABS,
+            DISPLAY_SHOW_VIEW
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface DisplayOptions {
@@ -54,15 +54,20 @@ public class ToolbarActivity extends BaseTemplateActivity {
     public static final int DISPLAY_ORIGINAL = 0x1;
     public static final int DISPLAY_SHOW_TITLE = 0x1 << 1;
     public static final int DISPLAY_SHOW_TABS = 0x1 << 2;
+    public static final int DISPLAY_SHOW_VIEW = 0x1 << 3;
+
     public int mDisplayOptions = 0x1 << 1;
     private Toolbar mToolbar;
     private TextView mTitleText;
+    private RelativeLayout mViewGroup;
     private RelativeLayout mToolbarContainer;
     private RelativeLayout mContentContainer;
 
     private RoundCornerTabView mTabView;
 
     private CharSequence mTitle;
+
+    private HashMap<String,View> mMapCustomView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class ToolbarActivity extends BaseTemplateActivity {
         mTitleText = (TextView) findViewById(R.id.common_title_text);
         mContentContainer = (RelativeLayout) findViewById(R.id.common_container);
         mToolbarContainer = (RelativeLayout) findViewById(R.id.toolbar_container);
+        mViewGroup = (RelativeLayout) findViewById(R.id.common_title_view_group);
         mTabView = (RoundCornerTabView) findViewById(R.id.common_title_tabs);
         setTitle(getTitle());
     }
@@ -121,6 +127,14 @@ public class ToolbarActivity extends BaseTemplateActivity {
                     mTabView.setVisibility(View.GONE);
                 }
             }
+
+            if ((changed & DISPLAY_SHOW_VIEW) != 0) {
+                if ((newOptions & DISPLAY_SHOW_VIEW) != 0) {
+                    mViewGroup.setVisibility(View.VISIBLE);
+                } else {
+                    mViewGroup.setVisibility(View.GONE);
+                }
+            }
         }
     }
 
@@ -137,7 +151,29 @@ public class ToolbarActivity extends BaseTemplateActivity {
     }
 
     public void setCustomView(View view) {
-        mToolbarContainer.addView(view);
+        getCustomViewGroup().removeAllViews();
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        getCustomViewGroup().addView(view, lp);
+        setDisplayMode(DISPLAY_SHOW_VIEW);
+    }
+
+    public void setCustomViewStore(View view, String tag){
+        if (mMapCustomView.get(tag)==null){
+            mMapCustomView.put(tag,view);
+        }
+        setCustomView(view);
+    }
+
+    @Nullable
+    public View getStoredCustomView(String tag){
+        return mMapCustomView.get(tag);
+    }
+
+    public RelativeLayout getCustomViewGroup() {
+        return mViewGroup;
     }
 
     public void addTab(Tab tab) {
@@ -148,7 +184,7 @@ public class ToolbarActivity extends BaseTemplateActivity {
         mTabView.setTabSelectedListener(observer);
     }
 
-    public void attachViewPager(final ViewPager viewPager){
+    public void attachViewPager(final ViewPager viewPager) {
         setDisplayMode(DISPLAY_SHOW_TABS);
         PagerAdapter adapter = viewPager.getAdapter();
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -172,6 +208,6 @@ public class ToolbarActivity extends BaseTemplateActivity {
             public void onTabReselected(Tab tab, int position) {
             }
         });
-   }
+    }
 
 }

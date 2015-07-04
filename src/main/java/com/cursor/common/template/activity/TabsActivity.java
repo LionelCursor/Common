@@ -25,17 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * USER: ldx
  * DATE: 2015/5/30
  * EMAIL: danxionglei@foxmail.com
  * PROJECT: MicroTravelNotes
- * <p>
+ * <p/>
  * ********************************
  * FEATURES:
  * DONE- Contents controlled by tabs below
- * DONE- Style and events of tabs can be easily customized {@link #onDeployTabs(View, int)}
+ * DONE- Style and events of tabs can be easily customized {@link #onDeployTabs()}
  * {@link #onTabSelected(View, int)}
  * DONE- Fragment can be find by tag instead of replace every time
  * TODO- Use TabGroup instead
@@ -81,7 +82,7 @@ public abstract class TabsActivity extends ToolbarActivity {
     /**
      * height of tabs layout ,unit dp
      */
-    private int mTabHeight = 40;
+    private int mTabHeight = 50;
 
     /**
      * Layout of tabs below to be set.
@@ -106,7 +107,8 @@ public abstract class TabsActivity extends ToolbarActivity {
 //        fillWithFragment(getFragmentWithIndex(mInitFragmentIndex));
         //Here is a bug I don't know why. When I delete the line below, when I touch one tab, the
         //last tab will pressed either only if I touch it.
-        onTabSelected(mTabs.getChildAt(mInitFragmentIndex), mInitFragmentIndex);
+        //onTabSelected(mTabs.getChildAt(mInitFragmentIndex), mInitFragmentIndex);
+        fillWithFragment(getFragment(mInitFragmentIndex));
     }
 
     //======================== PRIVATE METHOD =========================
@@ -120,19 +122,21 @@ public abstract class TabsActivity extends ToolbarActivity {
         //View's layoutParams will be ignored when use {@link Activity#setContentView(View view)}
         //and set MATCH_PARENT both height and width
         RelativeLayout root = new RelativeLayout(AppData.getContext());
-        //tab layout
-        mTabs = getTabsLayout() == null ? generateTabLayout() : getTabsLayout();
-        mTabs.setId(R.id.common_tabs_activity_tabs_layout);
-        LayoutParams lpOfTabs = new LayoutParams(MATCH_PARENT, DisplayUtils.dip2px(mTabHeight));
-        lpOfTabs.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        root.addView(mTabs, lpOfTabs);
+
+
         //main layout
         RelativeLayout mainLayout = new RelativeLayout(AppData.getContext());
         mainLayout.setId(R.id.common_tabs_activity_main_layout);
         LayoutParams lpOfMainLayout = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        lpOfMainLayout.addRule(RelativeLayout.ABOVE, R.id.common_tabs_activity_tabs_layout);
         root.addView(mainLayout, lpOfMainLayout);
 
+        //tab layout
+        mTabs = getTabsLayout() == null ? generateTabLayout() : getTabsLayout();
+        mTabs.setId(R.id.common_tabs_activity_tabs_layout);
+        LayoutParams lpOfTabs = new LayoutParams(MATCH_PARENT,
+                mTabs == getTabsLayout() ? WRAP_CONTENT : DisplayUtils.dip2px(mTabHeight));
+        lpOfTabs.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        root.addView(mTabs, lpOfTabs);
         return root;
     }
 
@@ -199,25 +203,18 @@ public abstract class TabsActivity extends ToolbarActivity {
         if (mTabs == null) {
             throw new IllegalStateException("mTabs is null");
         }
-        View v;
-        for (int i = 0; i < mTabsCount; i++) {
-            v = mTabs.getChildAt(i);
-            v.setBackgroundDrawable(generateColorSelector());
-            v.setOnClickListener(new OnTabClickInnerListener());
-            onDeployTabs(v, i);
-        }
+        onDeployTabs();
+
     }
 
-    private void cleanSelectedTabs() {
+    protected void cleanSelectedTabs() {
         if (mTabs == null) {
             throw new IllegalStateException("mTabs is null");
         }
         View v;
         for (int i = 0; i < mTabsCount; i++) {
-            Logger.e("i = " + i);
             v = mTabs.getChildAt(i);
             v.setBackgroundDrawable(generateColorSelector());
-            onDeployTabs(v, i);
         }
     }
 
@@ -286,7 +283,9 @@ public abstract class TabsActivity extends ToolbarActivity {
      * @param position the index of Fragment
      * @return null if position is bigger than mTabsCount
      */
-    public @Nullable Fragment getFragment(int position) {
+    public
+    @Nullable
+    Fragment getFragment(int position) {
         if (position >= mTabsCount) {
             return null;
         }
@@ -346,8 +345,13 @@ public abstract class TabsActivity extends ToolbarActivity {
     /**
      * Invoked when tab view is being deployed
      */
-    protected void onDeployTabs(View v, int index) {
-        if (CommonConfig.DEBUG) Logger.d(TAG, "onDeployTabs index = " + index);
+    protected void onDeployTabs() {
+        View v;
+        for (int i = 0; i < mTabsCount; i++) {
+            v = mTabs.getChildAt(i);
+            v.setBackgroundDrawable(generateColorSelector());
+            v.setOnClickListener(new OnTabClickInnerListener());
+        }
     }
 
     private class OnTabClickInnerListener implements View.OnClickListener {

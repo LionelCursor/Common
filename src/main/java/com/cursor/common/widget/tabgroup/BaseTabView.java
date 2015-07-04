@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.cursor.common.utils.DisplayUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,8 @@ public abstract class BaseTabView extends View implements ITabGroup {
     protected int mCurPosSlt = 0;
 
     protected int mCurPosHover = 0;
+
+    protected int mTabTitleTextSize = DisplayUtils.sp2px(10);//px
 
     private List<Tab> mTabs = new ArrayList<>();
 
